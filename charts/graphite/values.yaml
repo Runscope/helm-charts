@@ -1,7 +1,7 @@
 # Default values for graphite.
 
 image:
-  repository: gcr.io/esd-runscope-prd/graphite-statsd
+  repository: gcr.io/runscope-228819/graphite-statsd
   tag: 1.1.5-4
   pullPolicy: IfNotPresent
 
