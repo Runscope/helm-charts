@@ -164,7 +164,7 @@ configMaps:
     # Specify the user to drop privileges to
     # If this is blank carbon-cache runs as the user that invokes it
     # This user must have write access to the local data directory
-    USER = runscope
+    USER = 
 
     # Limit the size of the cache to avoid swapping or becoming CPU bound.
     # Sorts and serving cache queries gets more expensive as the cache grows.
@@ -530,7 +530,7 @@ configMaps:
 
     # Specify the user to drop privileges to
     # If this is blank carbon-relay runs as the user that invokes it
-    USER = runscope
+    USER = 
 
     # This is the percentage that the queue must be empty before it will accept
     # more messages.  For a larger site, if the queue is very large it makes sense
@@ -907,7 +907,7 @@ configMaps:
     # in the DESTINATIONS setting in the [relay] section
     [default]
     default = true
-    destinations = 127.0.0.1:2004
+    destinations = 0.0.0.0:2004
   rewrite-rules.conf: |-
     # This file defines regular expression patterns that can be used to
     # rewrite metric names in a search & replace fashion. It consists of two
