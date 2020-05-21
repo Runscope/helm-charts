@@ -53,11 +53,8 @@ resources: {}
   #  memory: 512Mi
 
 nodeSelector: {}
-tolerations:
-- key: "graphiteHost"
-  operator: "Equal"
-  value: "true"
-  effect: "NoSchedule"
+
+tolerations: []
 
 affinity: {}
 
