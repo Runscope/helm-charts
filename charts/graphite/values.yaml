@@ -466,7 +466,7 @@ configMaps:
 
     # If you use consistent-hashing you can add redundancy by replicating every
     # datapoint to more than one machine.
-    REPLICATION_FACTOR = 1
+    REPLICATION_FACTOR = 2
 
     # For REPLICATION_FACTOR >=2, set DIVERSE_REPLICAS to True to guarantee replicas
     # across distributed hosts. With this setting disabled, it's possible that replicas
@@ -636,7 +636,7 @@ configMaps:
 
     # If you want to add redundancy to your data by replicating every
     # datapoint to more than one machine, increase this.
-    REPLICATION_FACTOR = 1
+    REPLICATION_FACTOR = 2
 
     # This is the maximum number of datapoints that can be queued up
     # for a single destination. Once this limit is hit, we will
