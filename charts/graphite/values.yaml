@@ -6,9 +6,11 @@ image:
   pullPolicy: IfNotPresent
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 8080
-  annotations: {}
+  #annotations: {}
+  annotations:
+    cloud.google.com/load-balancer-type: "Internal"
   labels: {}
 
 ingress:
@@ -42,7 +44,7 @@ persistence:
   ## If defined, PVC must be created manually before volume will be bound
   # existingClaim:
   accessMode: ReadWriteOnce
-  size: 10Gi
+  size: 500Gi
 
 resources: {}
   # limits:
@@ -52,9 +54,17 @@ resources: {}
   #  cpu: 200m
   #  memory: 512Mi
 
-nodeSelector: {}
+#nodeSelector: {}
+nodeSelector:
+    serviceType: graphite
 
-tolerations: []
+
+#tolerations: []
+tolerations:
+- key: dedicatedHost
+  operator: Equal
+  value: graphite
+  effect: NoSchedule
 
 affinity: {}
 
@@ -159,18 +169,18 @@ configMaps:
 
     # Enable daily log rotation. If disabled, a new file will be opened whenever the log file path no
     # longer exists (i.e. it is removed or renamed)
-    ENABLE_LOGROTATION = True
+    ENABLE_LOGROTATION = False
 
     # Specify the user to drop privileges to
     # If this is blank carbon-cache runs as the user that invokes it
     # This user must have write access to the local data directory
-    USER =
+    USER = 
 
     # Limit the size of the cache to avoid swapping or becoming CPU bound.
     # Sorts and serving cache queries gets more expensive as the cache grows.
     # Use the value "inf" (infinity) for an unlimited cache size.
     # value should be an integer number of metric datapoints.
-    MAX_CACHE_SIZE = inf
+    MAX_CACHE_SIZE = 2000000
 
     # Limits the number of whisper update_many() calls per second, which effectively
     # means the number of write requests sent to the disk. This is intended to
@@ -193,7 +203,7 @@ configMaps:
     # until such point as a subsequent metric is received and fits within the
     # defined rate limit. Setting this value high (like "inf" for infinity) will
     # cause carbon to create the files quickly but at the risk of increased I/O.
-    MAX_CREATES_PER_MINUTE = 50
+    MAX_CREATES_PER_MINUTE = 500
 
     # Set the minimum timestamp resolution supported by this instance. This allows
     # internal optimisations by overwriting points with equal truncated timestamps
@@ -262,7 +272,7 @@ configMaps:
     LOG_UPDATES = False
     LOG_CREATES = False
     LOG_CACHE_HITS = False
-    LOG_CACHE_QUEUE_SORTS = False
+    LOG_CACHE_QUEUE_SORTS = True
 
     # The thread that writes metrics to disk can use one of the following strategies
     # determining the order in which metrics are removed from cache and flushed to
@@ -514,7 +524,7 @@ configMaps:
     # for a single destination. Once this limit is hit, we will
     # stop accepting new data if USE_FLOW_CONTROL is True, otherwise
     # we will drop any subsequently received datapoints.
-    MAX_QUEUE_SIZE = 10000
+    MAX_QUEUE_SIZE = 100000
 
     # This defines the maximum "message size" between carbon daemons.  If
     # your queue is large, setting this to a lower number will cause the
@@ -530,7 +540,7 @@ configMaps:
 
     # Specify the user to drop privileges to
     # If this is blank carbon-relay runs as the user that invokes it
-    # USER =
+    USER = 
 
     # This is the percentage that the queue must be empty before it will accept
     # more messages.  For a larger site, if the queue is very large it makes sense
@@ -636,7 +646,7 @@ configMaps:
 
     # If you want to add redundancy to your data by replicating every
     # datapoint to more than one machine, increase this.
-    REPLICATION_FACTOR = 1
+    REPLICATION_FACTOR = 2
 
     # This is the maximum number of datapoints that can be queued up
     # for a single destination. Once this limit is hit, we will
@@ -942,17 +952,17 @@ configMaps:
     #  aggregationMethod: function to apply to data points for aggregation
     #
     [min]
-    pattern = \.lower$
+    pattern = \.min$
     xFilesFactor = 0.1
     aggregationMethod = min
 
     [max]
-    pattern = \.upper(_\d+)?$
+    pattern = \.max$
     xFilesFactor = 0.1
     aggregationMethod = max
 
     [sum]
-    pattern = \.sum$
+    pattern = \.count$
     xFilesFactor = 0
     aggregationMethod = sum
 
@@ -968,7 +978,7 @@ configMaps:
 
     [default_average]
     pattern = .*
-    xFilesFactor = 0.3
+    xFilesFactor = 0.5
     aggregationMethod = average
   storage-schemas.conf: |-
     # Schema definitions for Whisper files. Entries are scanned in order,
@@ -993,6 +1003,14 @@ configMaps:
     [carbon]
     pattern = ^carbon\.
     retentions = 10s:6h,1m:90d
+    
+    # 5 second resolution for 1 day (17,280 data points)
+    # 30 second resolution for 7 days (20,160 data points)
+    # 5 minute resolution for 60 days (17,280 data points)
+    # 1 hour resolution for 720 days (17,280 data points)
+    [default]
+    pattern = .*
+    retentions = 5s:1d,30s:7d,5m:60d,1h:720d
 
     [default_1min_for_1day]
     pattern = .*
