@@ -8,7 +8,9 @@ image:
 service:
   type: LoadBalancer
   port: 8080
-  annotations: {}
+  #annotations: {}
+  annotations:
+    cloud.google.com/load-balancer-type: "Internal"
   labels: {}
 
 ingress:
