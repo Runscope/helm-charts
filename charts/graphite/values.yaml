@@ -46,8 +46,6 @@ persistence:
   accessMode: ReadWriteOnce
   size: 500Gi
 
-"1.5"
-48Gi
 #resources: {}
 resources:
   requests:
