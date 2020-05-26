@@ -58,17 +58,9 @@ resources:
   #  cpu: 200m
   #  memory: 512Mi
 
-#nodeSelector: {}
-nodeSelector:
-    serviceType: graphite
+nodeSelector: {}
 
-
-#tolerations: []
-tolerations:
-- key: dedicatedHost
-  operator: Equal
-  value: graphite
-  effect: NoSchedule
+tolerations: []
 
 affinity: {}
 
