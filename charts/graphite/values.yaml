@@ -44,9 +44,13 @@ persistence:
   ## If defined, PVC must be created manually before volume will be bound
   # existingClaim:
   accessMode: ReadWriteOnce
-  size: 500Gi
+  size: 1000Gi
 
-resources: {}
+#resources: {}
+resources:
+  requests:
+    memory: 48Gi
+    cpu: 13
   # limits:
   #  cpu: 500m
   #  memory: 1024Mi
@@ -54,17 +58,9 @@ resources: {}
   #  cpu: 200m
   #  memory: 512Mi
 
-#nodeSelector: {}
-nodeSelector:
-    serviceType: graphite
+nodeSelector: {}
 
-
-#tolerations: []
-tolerations:
-- key: dedicatedHost
-  operator: Equal
-  value: graphite
-  effect: NoSchedule
+tolerations: []
 
 affinity: {}
 
