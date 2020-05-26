@@ -46,7 +46,13 @@ persistence:
   accessMode: ReadWriteOnce
   size: 500Gi
 
-resources: {}
+"1.5"
+48Gi
+#resources: {}
+resources:
+  requests:
+    memory: 48Gi
+    cpu: 13
   # limits:
   #  cpu: 500m
   #  memory: 1024Mi
