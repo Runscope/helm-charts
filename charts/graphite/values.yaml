@@ -44,7 +44,7 @@ persistence:
   ## If defined, PVC must be created manually before volume will be bound
   # existingClaim:
   accessMode: ReadWriteOnce
-  size: 500Gi
+  size: 1000Gi
 
 #resources: {}
 resources:
