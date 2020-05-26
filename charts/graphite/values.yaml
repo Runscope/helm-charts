@@ -26,6 +26,7 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
+placementGroup: "true"
 persistence:
   ## Enable storage persistence using Persistent Volume Claims.
   ##
