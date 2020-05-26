@@ -10,9 +10,6 @@ metadata:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 spec:
-  selector: 
-    matchLabels:
-      failure-domain.beta.kubernetes.io/zone: "us-east4-c"
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}
   resources:
