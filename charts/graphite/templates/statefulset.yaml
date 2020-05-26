@@ -20,11 +20,22 @@ spec:
       labels:
         app.kubernetes.io/name: {{ include "graphite.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
+        group: {{ quote .Values.placementGroup }}
     spec:
 {{- if .Values.initContainers }}
       initContainers:
 {{ toYaml .Values.initContainers | indent 8 }}
 {{- end }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: group
+                    operator: In
+                    values:
+                      - "true"
+              topologyKey: "kubernetes.io/hostname"
       containers:
       - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         name: {{ .Chart.Name }}
