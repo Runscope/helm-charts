@@ -27,6 +27,7 @@ ingress:
   #      - chart-example.local
 
 placementGroup: "true"
+replicaCount: 2
 persistence:
   ## Enable storage persistence using Persistent Volume Claims.
   ##
