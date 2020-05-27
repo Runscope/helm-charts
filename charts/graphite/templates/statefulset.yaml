@@ -13,8 +13,7 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "graphite.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
-  replicas: {{ .Values.replicaCount }}    
+      app.kubernetes.io/instance: {{ .Release.Name }}   
   serviceName: {{ template "graphite.name" . }}
   template:
     metadata:
