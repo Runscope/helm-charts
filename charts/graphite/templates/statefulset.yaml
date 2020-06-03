@@ -80,7 +80,7 @@ spec:
           - name: {{ template "graphite.fullname" . }}-statsd-configmap
             subPath: config_udp.js
             mountPath: /opt/statsd/config/udp.js
-          - name: {{ template "graphite.fullname" . }}-pvc
+          - name: graphite-storage-volume
             mountPath: /opt/graphite/storage/
       volumes:
         - name: {{ template "graphite.fullname" . }}-configmap
