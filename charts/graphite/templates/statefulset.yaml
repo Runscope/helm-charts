@@ -89,13 +89,6 @@ spec:
         - name: {{ template "graphite.fullname" . }}-statsd-configmap
           configMap:
             name: {{ template "graphite.fullname" . }}-statsd-configmap
-        - name: {{ template "graphite.fullname" . }}-pvc
-{{- if .Values.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "graphite.fullname" . }}-pvc{{- end }}
-{{- else }}
-          emptyDir: {}
-{{- end }}
   volumeClaimTemplates:
   - metadata:
       name: graphite-storage-volume
