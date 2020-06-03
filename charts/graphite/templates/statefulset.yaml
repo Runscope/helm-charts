@@ -15,6 +15,7 @@ spec:
       app.kubernetes.io/name: {{ include "graphite.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}   
   serviceName: {{ template "graphite.name" . }}
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
@@ -95,6 +96,15 @@ spec:
 {{- else }}
           emptyDir: {}
 {{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: graphite-storage-volume
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "fast"
+      resources:
+        requests:
+          storage: 500Gi
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
