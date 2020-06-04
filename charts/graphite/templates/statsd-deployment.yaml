@@ -7,7 +7,7 @@ spec:
   template:
     metadata:
       labels:
-        component: graphite
+        component: statsd
         app: statsd
     spec:
       containers:
