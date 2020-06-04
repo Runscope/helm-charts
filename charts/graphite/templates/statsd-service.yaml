@@ -5,10 +5,9 @@ metadata:
   labels:
     app: statsd
 spec:
-  type: NodePort
+  clusterIP: None
   selector:
     app: graphite
-  clusterIP: None
   ports:
   - port: 8125
     name: statsd
