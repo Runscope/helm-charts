@@ -28,9 +28,6 @@ spec:
     - name: aggregate-pickl
       port: 2024
       protocol: TCP
-    - name: statsd-admin
-      port: 8126
-      protocol: TCP
   selector:
     app.kubernetes.io/name: {{ include "graphite.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}

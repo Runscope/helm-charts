@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: statsd
+spec:
+  replicas: {{ Values.statsdReplicaCount }}
+  template:
+    metadata:
+      labels:
+        component: graphite
+        app: statsd
+    spec:
+      containers:
+        - name: {{ .Chart.Name }} // Same image as one available on graphite pod
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 512Mi
+          ports:
+          - name: statsd
+            containerPort: 8125
+            protocol: UDP
+          - name: stasd-admin
+            containerPort: 8126
+            protocol: TCP
+          env:
+          - name: "STATSD_INTERFACE"
+            value: udp
+          volumeMounts:
+          - name: graphite-statsd-configmap
+            subPath: config_tcp.js
+            mountPath: /opt/statsd/config/tcp.js
+          - name: graphite-statsd-configmap
+            subPath: config_udp.js
+            mountPath: /opt/statsd/config/udp.js
+      volumes:
+      - name: graphite-statsd-configmap
+        configMap:
+          name: graphite-statsd-configmap

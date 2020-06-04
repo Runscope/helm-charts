@@ -15,6 +15,7 @@ spec:
       app.kubernetes.io/name: {{ include "graphite.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}   
   serviceName: {{ template "graphite.name" . }}
+  replicas: {{ .Values.podReplicaCount }}
   template:
     metadata:
       labels:
@@ -50,14 +51,6 @@ spec:
           containerPort: 2023
         - name: aggregate-pickl
           containerPort: 2024
-        - name: statsd
-          protocol: {{ .Values.statsd.interface }}
-          containerPort: 8125
-        - name: statsd-admin
-          containerPort: 8126
-        env:
-        - name: "STATSD_INTERFACE"
-          value: {{ .Values.statsd.interface | lower }}
         - name: "GRAPHITE_TIME_ZONE"
           value: {{ .Values.timeZone }}
         livenessProbe:
@@ -73,28 +66,21 @@ spec:
         volumeMounts:
           - name: {{ template "graphite.fullname" . }}-configmap
             mountPath: /opt/graphite/conf/
-          - name: {{ template "graphite.fullname" . }}-statsd-configmap
-            subPath: config_tcp.js
-            mountPath: /opt/statsd/config/tcp.js
-          - name: {{ template "graphite.fullname" . }}-statsd-configmap
-            subPath: config_udp.js
-            mountPath: /opt/statsd/config/udp.js
-          - name: {{ template "graphite.fullname" . }}-pvc
+          - name: graphite-storage-volume
             mountPath: /opt/graphite/storage/
       volumes:
         - name: {{ template "graphite.fullname" . }}-configmap
           configMap:
             name: {{ template "graphite.fullname" . }}-configmap
-        - name: {{ template "graphite.fullname" . }}-statsd-configmap
-          configMap:
-            name: {{ template "graphite.fullname" . }}-statsd-configmap
-        - name: {{ template "graphite.fullname" . }}-pvc
-{{- if .Values.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "graphite.fullname" . }}-pvc{{- end }}
-{{- else }}
-          emptyDir: {}
-{{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: graphite-storage-volume
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "fast"
+      resources:
+        requests:
+          storage: 500Gi
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
