@@ -32,7 +32,7 @@ statsdReplicaCount: 2
 persistence:
   ## Enable storage persistence using Persistent Volume Claims.
   ##
-  enabled: true
+  enabled: false
   ## Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
